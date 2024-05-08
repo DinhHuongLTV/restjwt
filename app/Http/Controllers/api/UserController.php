@@ -43,10 +43,17 @@ class UserController extends Controller
     public function store(StoreUser $request)
     {
         $user = User::create($request->validated());
-        $respone = [
-            'status' => '200',
-            'data' => $user,
-        ];
+        if ($user->id) {
+            $respone = [
+                'status' => '200',
+                'data' => $user,
+            ];
+        } else {
+            $respone = [
+                'status' => '500',
+                'title' => 'Server error',
+            ];
+        }
         return $respone;
     }
 

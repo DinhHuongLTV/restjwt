@@ -38,3 +38,8 @@ Route::prefix('/users')->name('users.')->middleware('auth:sanctum')->group(funct
 });
 
 Route::post('/login', [AuthController::class, 'login']);
+
+Route::get('/tokens', [AuthController::class, 'getTokens'])->middleware('auth:sanctum');
+Route::get('/deleteToken',  [AuthController::class, 'deleteToken'])->middleware('auth:sanctum');
+
+Route::get('/refresh-token',  [AuthController::class, 'refreshToken']);
