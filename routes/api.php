@@ -4,6 +4,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\api\UserController;
 use App\Http\Controllers\api\AuthController;
+use App\Http\Controllers\api\EmailVerificationController;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,7 +26,7 @@ Route::post('/product', function (Request $request) {
     return $request->all();
 });
 
-Route::prefix('/users')->name('users.')->middleware('auth:sanctum')->group(function() {
+Route::prefix('/users')->name('users.')->middleware('auth:sanctum', 'verified')->group(function() {
     Route::get('/', [UserController::class, 'index'])->name('all');
 
     Route::get('/{id}', [UserController::class, 'show'])->name('one');
@@ -43,3 +45,12 @@ Route::get('/tokens', [AuthController::class, 'getTokens'])->middleware('auth:sa
 Route::get('/deleteToken',  [AuthController::class, 'deleteToken'])->middleware('auth:sanctum');
 
 Route::get('/refresh-token',  [AuthController::class, 'refreshToken']);
+
+// Route::get('/email/verify', function () {
+//     return view('auth.verify-email');
+// })->middleware('auth')->name('verification.notice');
+
+
+Route::get('/email/verify/{id}/{hash}', [EmailVerificationController::class, 'verify'])->middleware(['auth:sanctum', 'signed'])->name('verification.verify');
+
+Route::post('/email/verification-notification', [EmailVerificationController::class, 'sendEmailVerification'])->middleware(['auth:sanctum', 'throttle:6,1'])->name('verification.send');

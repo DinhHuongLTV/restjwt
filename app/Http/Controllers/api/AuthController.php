@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Redis;
 use Laravel\Sanctum\PersonalAccessToken;
 
 // use Auth;

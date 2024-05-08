@@ -8,6 +8,7 @@ use App\Http\Requests\StoreUser;
 use App\Http\Requests\UpdateUser;
 use Illuminate\Http\Request;
 use App\Http\Resources\UserCollection;
+use Illuminate\Auth\Events\Registered;
 
 class UserController extends Controller
 {
@@ -43,10 +44,11 @@ class UserController extends Controller
     public function store(StoreUser $request)
     {
         $user = User::create($request->validated());
+        $user->sendEmailVerificationNotification();
         if ($user->id) {
             $respone = [
                 'status' => '200',
-                'data' => $user,
+                'title' => 'User created successfully! Please check your email for verification.',
             ];
         } else {
             $respone = [
