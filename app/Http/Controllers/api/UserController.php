@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Http\Requests\StoreUser;
 use App\Http\Requests\UpdateUser;
 use Illuminate\Http\Request;
+use App\Http\Resources\UserCollection;
 
 class UserController extends Controller
 {
@@ -26,15 +27,14 @@ class UserController extends Controller
         $users = User::where($searchQuery)->get();
         if ($users->count()>0) {
             $status = '200';
+            $title = 'success';
         } else {
-            $status = '404';
+            $status = '204';
+            $title = 'No data returned';
         }
 
-        $respone = [
-            'status' => $status,
-            'data' => $users ?? 'no data',
-        ];
-        return $respone;
+        $users = new UserCollection($users, $status, $title);
+        return $users;
     }
 
     /**
@@ -56,7 +56,8 @@ class UserController extends Controller
     public function show(string $id)
     {
         $user = User::find($id);
-        $status = $user == null ? '404' : '200';
+
+        $status = $user == null ? '204' : '200';
         return [
             'status' => $status,
             'message' => 'User\'s id: ' . $id,
@@ -85,6 +86,18 @@ class UserController extends Controller
      */
     public function destroy(string $id)
     {
-        return $id;
+        $user = User::find($id);
+        if ($user) {
+            $code = '200';
+            $title = 'success';
+            $user->delete();
+        } else {
+            $code = '204';
+            $title = 'No users found';
+        }
+        return [
+            'status' => $code,
+            'message' => $title,
+        ];
     }
 }

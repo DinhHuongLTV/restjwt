@@ -28,7 +28,7 @@ class AuthController extends Controller
         $response = [
             'status' => $status,
             'message' => $message,
-            'token' => $token ?? '',
+            'token' => $token ?? 'No tokens',
         ];
         return $response;
     }
